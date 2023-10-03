@@ -1,0 +1,27 @@
+=============================================================================
+
+# Between NTP (1900-01-01T00:00:00) and UNIX (1970-01-01T00:00:00) epochs are
+# 70 years with 17 leapdays or 2208988800 seconds:
+OFFSET_NTP_UNIX = const((70 * 365 + 17) * 24 * 60 * 60)
+
+def NtpToUnixEpoch(seconds):
+    # Convert 1900-01-01T00:00:00 to 1970-01-01T00:00:00
+    return (seconds - 2208988800)
+
+=============================================================================
+
+https://www.eecis.udel.edu/~mills/y2k.html
+
+https://stackoverflow.com/a/29138806
+
+https://tickelton.gitlab.io/articles/ntp-timestamps/
+
+ void ntp_to_timeval(struct ntp_ts_t *ntp, struct timeval *tv) {
+   tv->tv_sec = ntp->seconds - 2208988800;
+   tv->tv_usec = (uint32_t)((double)ntp->fraction * 1.0e6 / (double)(1LL << 32));
+ }
+
+ void timeval_to_ntp(struct timeval *tv, struct ntp_ts_t *ntp) {
+   ntp->seconds = tv->tv_sec + 2208988800;
+   ntp->fraction = (uint32_t)((double)(tv->tv_usec + 1) * (double)(1LL << 32) * 1.0e-6);
+ }
