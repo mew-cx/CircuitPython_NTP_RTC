@@ -1,0 +1,28 @@
+=============================================================================
+Calibrating the PCF8523 RTC
+https://forum.micropython.org/viewtopic.php?t=2817
+
+=============================================================================
+Adalogger FeatherWing RTC accuracy
+https://forums.adafruit.com/viewtopic.php?f=57&t=108693
+
+# calibrate PCF8523 to compensate for drift.
+# gaining 2.3 seconds per 24 hours in my case
+
+from machine import I2C, Pin
+i2c = I2C(scl=Pin(5), sda=Pin(4))
+
+# scan the i2c bus if rtc address in unknown. returned decimal 104 which is 0x68
+i2c.scan()
+
+# 6 is adjustment value  (2.3 * 11.6) / 4.34 - (seconds fast * ppm) / 4.34 (page 31 datasheet)
+buf = bytearray((6,))
+
+# (device addr, register offset, adjustment value)
+i2c.writeto_mem(0x68, 0x0e, buf)
+
+=============================================================================
+Real-Time Clock (RTC) drift
+https://forum.micropython.org/viewtopic.php?f=6&t=326
+
+=============================================================================
